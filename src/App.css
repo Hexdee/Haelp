@@ -1,10 +1,18 @@
 .App {
   text-align: center;
+  background-color: tomato;
+  min-height: 100vh;
 }
 
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+}
+
+.App h1 {
+  color: white;
+  text-shadow: 5px 5px red;
+  text-align: center;
 }
 
 @media (prefers-reduced-motion: no-preference) {
