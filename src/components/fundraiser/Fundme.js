@@ -32,10 +32,10 @@ const Fundme = ({ fundme, donate }) => {
           <Card.Title>{title}</Card.Title>
           <Card.Text className="flex-grow-1 ">{description}</Card.Text>
           <Card.Text className="text-secondary">
-            <span>Target: {target} NEAR</span>
+            <span>Target: {target} AE</span>
           </Card.Text>
           <Card.Text className="text-secondary">
-            <span>Raised: {donated} NEAR</span>
+            <span>Raised: {donated} AE</span>
           </Card.Text>
               <Form.Control
                 type="text"
