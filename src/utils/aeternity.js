@@ -1,6 +1,11 @@
 import { AeSdkAepp, Node, BrowserWindowMessageConnection, walletDetector } from '@aeternity/aepp-sdk';
 import haelp from './contractSource';
-const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc"
+const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc";
+
+const ACCOUNT_KEYPAIR = {
+  publicKey: 'ak_e9UjhUM8ePgZUPkFgxFJ1tqv6bTwfeqhxcnTBcrYDyW5QhgqU',
+  secretKey: 'eba8786a506fd20e8b00f117e6d6598fd0943ff3d0bd926aea5e1c35802ce36a54584dc898d97866e538fb8a6bfa26db4ea60d69c87c68949b4531078aab2ea2',
+};
 
 // const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
 // const MAINNET_NODE_URL = 'https://mainnet.aeternity.io';
@@ -12,6 +17,7 @@ var account;
 var balance;
 
 const node = new Node('https://testnet.aeternity.io')
+const account = new MemoryAccount({ keypair: ACCOUNT_KEYPAIR });
 const aeSdk = new AeSdkAepp({
   nodes: [{ name: 'testnet', instance: node }],
   compilerUrl: COMPILER_URL,
@@ -34,6 +40,12 @@ export async function getCampaigns () {
   const res = await contract.methods.get_campaigns();
   const campaigns = res.decodedResult;
   return campaigns;
+}
+
+export async function createCampaign (title, description, image, target) {
+  await aeSdk.addAccount(account, { select: true });
+  const contract = await getContract();
+  await contract.methods.create_campaign(title, description, image, target);
 }
 
 // async function scanForWallets () {

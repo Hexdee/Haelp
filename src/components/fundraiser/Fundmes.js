@@ -10,7 +10,7 @@ import { NotificationSuccess, NotificationError } from "../utils/Notifications";
 //   donate,
 //   startFundme,
 // } from "../../utils/fundraiser";
-import { getCampaigns as getFundmeList } from "../../utils/aeternity";
+import { createCampaign, getCampaigns as getFundmeList } from "../../utils/aeternity";
 import { login } from "../../utils/aeternity";
 
 const Fundmes = () => {
@@ -32,20 +32,25 @@ const Fundmes = () => {
     }
   });
 
+// const addFundme = async (data) => {
+//   try {
+//     setLoading(true);
+//     startFundme(data).then((resp) => {
+//       getFundmes();
+//     });
+//     toast(<NotificationSuccess text="Campaign created successfully." />);
+//   } catch (error) {
+//     console.log({ error });
+//     toast(<NotificationError text="Failed to create a campaign." />);
+//   } finally {
+//     setLoading(false);
+//   }
+// };
 const addFundme = async (data) => {
-  try {
-    setLoading(true);
-    startFundme(data).then((resp) => {
-      getFundmes();
-    });
-    toast(<NotificationSuccess text="Campaign created successfully." />);
-  } catch (error) {
-    console.log({ error });
-    toast(<NotificationError text="Failed to create a campaign." />);
-  } finally {
-    setLoading(false);
-  }
-};
+  await createCampaign(data.title, data.description, data.image, data.target * 1e18)
+  window.location.reload()
+}
+
 
 const donateTo = async (id, amount) => {
   try {
