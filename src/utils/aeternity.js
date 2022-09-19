@@ -13,7 +13,7 @@ const COMPILER_URL = 'https://compiler.aepps.com';
 
 var walletInfo;
 var walletConnected = false;
-var account;
+// var account;
 var balance;
 
 const node = new Node('https://testnet.aeternity.io')
