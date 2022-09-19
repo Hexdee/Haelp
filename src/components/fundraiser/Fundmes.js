@@ -61,6 +61,13 @@ const donateTo = async (id, amount) => {
   }
 };
 
+const connectWallet = () => {
+  console.log("jkkldhk")
+    if(window.confirm("Are you sure you want to connect wallet?")) {
+      setIsConnected(true);
+    }
+}
+
 useEffect(() => {
   getFundmes();
 }, []);
@@ -74,7 +81,7 @@ useEffect(() => {
             {isConnected ?
             <AddFundme save={addFundme} /> :
             <Button
-            onClick={login}
+            onClick={connectWallet}
             variant="outline-light"
             className="rounded-pill px-3 mt-3"
           >
