@@ -1,4 +1,4 @@
-import { AeSdkAepp, Node, BrowserWindowMessageConnection, walletDetector } from '@aeternity/aepp-sdk';
+import { AeSdkAepp, Node, BrowserWindowMessageConnection, walletDetector, MemoryAccount } from '@aeternity/aepp-sdk';
 import haelp from './contractSource';
 const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc";
 
