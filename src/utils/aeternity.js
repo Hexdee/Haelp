@@ -1,4 +1,6 @@
 import { AeSdkAepp, Node, BrowserWindowMessageConnection, walletDetector } from '@aeternity/aepp-sdk';
+import haelp from './contractSource';
+const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc"
 
 // const TESTNET_NODE_URL = 'https://testnet.aeternity.io';
 // const MAINNET_NODE_URL = 'https://mainnet.aeternity.io';
@@ -19,26 +21,58 @@ const aeSdk = new AeSdkAepp({
 })
 
 
-export async function login () {
-  return new Promise((resolve) => {
-    const handleWallets = async ({ wallets, newWallet }) => {
-      newWallet = newWallet || Object.values(wallets)[0]
-    //   if (confirm(`Do you want to connect to wallet ${newWallet.info.name} with id ${newWallet.info.id}`)) {
-        stopScan()
-        walletInfo = await aeSdk.connectToWallet(newWallet.getConnection())
-        walletConnected = true
-        const { address: { current } } = await aeSdk.subscribeAddress('subscribe', 'connected')
-        account = Object.keys(current)[0]
-        balance = await aeSdk.getBalance(account)
-        resolve()
-        console.log(await getAccountId())
-        // window.location.reload()
-    //   }
-    }
-    const scannerConnection = new BrowserWindowMessageConnection();
-    const stopScan = walletDetector(scannerConnection, handleWallets);
-  })
+async function getContract() {
+  const contractInstance = await aeSdk.getContractInstance({ source: haelp });
+  const ACI = await contractInstance._aci;
+  const contract = await aeSdk.getContractInstance({aci: ACI, contractAddress: contractAddress})
+  return contract;
 }
+
+export async function getCampaigns () {
+  const contract = await getContract();
+  console.log(contract)
+  const res = await contract.methods.get_campaigns();
+  const campaigns = res.decodedResult;
+  return campaigns;
+}
+
+// async function scanForWallets () {
+//   console.log("here")
+//   return new Promise((resolve) => {
+//     const handleWallets = async ({ wallets, newWallet }) => {
+//       console.log("here")
+//       newWallet = newWallet || Object.values(wallets)[0]
+//       console.log(newWallet)
+//       if (window.confirm(`Do you want to connect to wallet ${newWallet.info.name} with id ${newWallet.info.id}`)) {
+//         console.log('newWallet', newWallet)
+//         stopScan()
+
+//         console.log("here")
+//         this.walletInfo = await this.aeSdk.connectToWallet(newWallet.getConnection())
+//         this.walletConnected = true
+//         const { address: { current } } = await this.aeSdk.subscribeAddress('subscribe', 'connected')
+//         console.log("here")
+//         this.$store.commit('aeSdk/setAddress', Object.keys(current)[0])
+//         resolve()
+//       }
+//     }
+
+//     const scannerConnection = new BrowserWindowMessageConnection()
+//     const stopScan = walletDetector(scannerConnection, handleWallets)
+//   })
+// }
+
+export const login = () => {}
+
+// export const login = async () => {
+//   // console.log(await scanForWallets())
+//   await aeSdk.connectToWallet(
+//     wallet.getConnection(),
+//     { connectNode: true, name: 'wallet-node', select: true },
+//   );
+// }
+
+
 
 export async function logout () {
   await aeSdk.disconnectWallet();

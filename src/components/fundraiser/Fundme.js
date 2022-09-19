@@ -4,25 +4,25 @@ import { Card, Button, Col, Badge, Stack, Form } from "react-bootstrap";
 
 const Fundme = ({ fundme, donate }) => {
     const [amount, setAmount] = useState("");
-  let { id, target, title, description, image, organizer, raised, donations } =
+  let { id, target, title, description, image, owner, donated} =
     fundme;
 
-    target = target / 1e18;
-    raised = raised / 1e18;;
+    target = Number(target) / 1e18;
+    donated = Number(donated) / 1e18;;
 
   const triggerDonate = () => {
     donate(id, amount);
   };
 
   return (
-    <Col key={id}>
+    <Col>
       <Card className=" h-100">
         <Card.Header>
-          <Stack direction="horizontal" gap={2}>
-            <span className="font-monospace text-secondary">{organizer}</span>
-            <Badge bg="secondary" className="ms-auto">
+          <Stack direction="horizontal" gap={2} styles="overflow: hidden">
+            <span className="font-monospace text-secondary">{owner.slice(0, 25)}...</span>
+            {/* <Badge bg="secondary" className="ms-auto">
               {donations} Donations
-            </Badge>
+            </Badge> */}
           </Stack>
         </Card.Header>
         <div className=" ratio ratio-4x3">
@@ -35,7 +35,7 @@ const Fundme = ({ fundme, donate }) => {
             <span>Target: {target} NEAR</span>
           </Card.Text>
           <Card.Text className="text-secondary">
-            <span>Raised: {raised} NEAR</span>
+            <span>Raised: {donated} NEAR</span>
           </Card.Text>
               <Form.Control
                 type="text"

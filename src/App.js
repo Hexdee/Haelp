@@ -21,14 +21,17 @@ const App = function AppWrapper() {
   });
 
   useEffect(() => {
-    getBalance();
-  }, []);
+    console.log("hello");
+    // login().then(res => console.log(res));
+    // console.log("hello");
+    // getBalance().then(() => console.log(balance));
+  }, [account]);
 
 return (
     <div className='App'>
       {/* <h1>hello</h1> */}
       <Notification />
-      {account ? (
+      {/* {account ? ( */}
         <Container fluid="md">
           <Nav className="justify-content-end pt-3 pb-5">
             <Nav.Item>
@@ -42,9 +45,9 @@ return (
           </Nav>
           <main><Fundmes /></main>
         </Container>
-      ) : (
-        <Cover name="Haelp" login={login} coverImg={coverImg} />
-      )}
+      {/* ) : (
+        <Cover name="Haelp" coverImg={coverImg} />
+      )} */}
     </div>
   );
 };

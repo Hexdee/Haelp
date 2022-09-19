@@ -1,9 +1,16 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
+// import { getAccountId } from "../../utils/aeternity";
+import { login } from "../../utils/aeternity";
 
-const Cover = ({ name, login, coverImg }) => {
-  if ((name, login, coverImg)) {
+const Cover = ({ name, coverImg }) => {
+
+  // useEffect(() => {
+  //   console.log("hi")
+  // }, [])
+
+  if ((name, coverImg)) {
     return (
       <div
         className="d-flex justify-content-center flex-column text-center "
