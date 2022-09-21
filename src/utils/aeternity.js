@@ -1,6 +1,6 @@
 import { AeSdkAepp, Node, BrowserWindowMessageConnection, walletDetector, MemoryAccount } from '@aeternity/aepp-sdk';
 import haelp from './contractSource';
-const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc";
+const contractAddress = "ct_tUHAMNd59QzVoTas7goG5HvfvhYBydbWV2aNbw7HmoJaDuBAS";
 
 const ACCOUNT_KEYPAIR = {
   publicKey: 'ak_e9UjhUM8ePgZUPkFgxFJ1tqv6bTwfeqhxcnTBcrYDyW5QhgqU',

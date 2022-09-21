@@ -8,7 +8,7 @@ import { NotificationSuccess, NotificationError } from "../utils/Notifications";
 import {  getCampaigns as getFundmeList, login, logout } from "../../utils/aeternity";
 import haelp from '../../utils/contractSource';
 import Wallet from "../Wallet";
-const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc";
+const contractAddress = "ct_tUHAMNd59QzVoTas7goG5HvfvhYBydbWV2aNbw7HmoJaDuBAS";
 
 const Fundmes = () => {
   const [fundmes, setFundmes] = useState([]);
@@ -26,8 +26,8 @@ const Fundmes = () => {
   }
 
   const createCampaign = async (title, description, image, target) => {
-    console.log(aeSdk);
     const contract = await getContract()
+    console.log(contract);
     await contract.methods.create_campaign(title, description, image, target);
     const account = Object.keys(aeSdk._accounts.current)[0];
     let fundme = {title, description, image, target};
@@ -38,17 +38,17 @@ const Fundmes = () => {
 
   const getFundmes = useCallback(async () => {
     try {
-      setLoading(true);
       setFundmes(await getFundmeList());
     } catch (error) {
       console.log({ error });
-    } finally {
-      setLoading(false);
     }
   });
 
   useEffect(() => {
-    getFundmes();
+    if(!fundmes){
+      setLoading(true);
+    }
+    getFundmes().then(() => setLoading(false));
     if(aeSdk && aeSdk._accounts) {
       setIsConnected(true);
     }
@@ -57,7 +57,6 @@ const Fundmes = () => {
   const connectWallet = async() => {
     try {
       const client = await login();
-      console.log(client)
       setAeSdk(client);
       const account = Object.keys(client._accounts.current)[0]
       setUser(account);
@@ -80,19 +79,18 @@ const Fundmes = () => {
 
 const addFundme = async (data) => {
   try {
-    setLoading(true);
+    // setLoading(true);
     await createCampaign(data.title, data.description, data.image, data.target * 1e18);
     toast(<NotificationSuccess text="Campaign created successfully." />);
   } catch (err) {
     toast(<NotificationError text="Failed to create a campaign." />);
   } finally {
-    setLoading(false);
+    // setLoading(false);
   }
 }
 
 const donate = async(id, amount) => {
   const contract = await getContract();
-  console.log(contract)
   await contract.methods.donate(Number(id), { amount: Number(amount) })
 }
 
