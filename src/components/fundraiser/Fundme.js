@@ -30,9 +30,9 @@ const Fundme = ({ fundme, donate, id }) => {
         <div className=" ratio ratio-4x3">
           <img src={image} alt={title} style={{ objectFit: "cover" }} />
         </div>
-        <Card.Body className="d-flex  flex-column text-center">
-          <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 ">{description}</Card.Text>
+        <Card.Body className="d-flex  flex-column" style={{ textAlign: "left" }}>
+          <Card.Title style={{ color: "#FF6247", fontWeight: "700" }}>{title}</Card.Title>
+          <Card.Text className="flex-grow-1" style={{ fontSize: "14px" }}>{description}</Card.Text>
           <Card.Text className="text-secondary">
             <span>Target: {target} AE</span>
           </Card.Text>
@@ -49,7 +49,7 @@ const Fundme = ({ fundme, donate, id }) => {
           <Button
             variant="outline-dark"
             onClick={triggerDonate}
-            className="w-100 py-3"
+            className="w-100 py-3 mt-3"
           >
             Donate
           </Button>
