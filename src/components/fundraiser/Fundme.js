@@ -2,18 +2,20 @@ import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Form } from "react-bootstrap";
 
-const Fundme = ({ fundme, donate }) => {
+const Fundme = ({ fundme, donate, id }) => {
     const [amount, setAmount] = useState("");
-  let { id, target, title, description, image, owner, donated} =
-    fundme;
+    let { target, title, description, image, owner, donated} =
+      fundme;
 
     target = Number(target) / 1e18;
     donated = Number(donated) / 1e18;;
 
   const triggerDonate = () => {
-    donate(id, amount);
+    donate(id, Number(amount) * 1e18);
   };
 
+
+  console.log()
   return (
     <Col>
       <Card className=" h-100">

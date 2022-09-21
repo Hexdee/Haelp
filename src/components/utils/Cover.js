@@ -2,9 +2,10 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 // import { getAccountId } from "../../utils/aeternity";
-import { login } from "../../utils/aeternity";
+// import { login } from "../../utils/aeternity";
 
 const Cover = ({ name, coverImg }) => {
+  const login = () => {}
 
   // useEffect(() => {
   //   console.log("hi")

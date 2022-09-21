@@ -27,6 +27,7 @@ const COMPILER_URL = 'https://compiler.aepps.com';
 
 	const deployInfo = await contract.deploy();
 	const tx = await contract.methods.create_campaign("Legacy", "Raise fund for Legacy, a decentralized app that prevent lose of funds", "https://generisonline.com/wp-content/uploads/2022/04/legacy-legacy-word-white-paper-151490674.jpg", 500000000000000000000)
+	await contract.methods.donate(0, {amount: 1000000000000000000});
 	const tx1 = await contract.methods.create_campaign("Greener Earth", "We are planning to plant 5000 trees before the end of the year, donate to support us", "https://greentumble.com/wp-content/uploads/2015/10/plant-a-tree.jpg", 1000000000000000000000)
 	const tx2 = await contract.methods.get_campaigns()
 	console.log(tx2.decodedResult);

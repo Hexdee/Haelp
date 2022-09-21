@@ -3,23 +3,38 @@ import { toast } from "react-toastify";
 import AddFundme from "./AddFundme";
 import Fundme from "./Fundme";
 import Loader from "../utils/Loader";
-import { Button, Row } from "react-bootstrap";
+import { Button, Nav, Row } from "react-bootstrap";
 import { NotificationSuccess, NotificationError } from "../utils/Notifications";
-// import {
-//   getFundme as getFundmeList,
-//   donate,
-//   startFundme,
-// } from "../../utils/fundraiser";
-import { createCampaign, getCampaigns as getFundmeList } from "../../utils/aeternity";
-import { login } from "../../utils/aeternity";
+import {  getCampaigns as getFundmeList, login, logout } from "../../utils/aeternity";
+import haelp from '../../utils/contractSource';
+import Wallet from "../Wallet";
+const contractAddress = "ct_AJj3CAJtq2iH46UxupPH8BqphD3u2MRgo787ML2AcmXNbGUEc";
 
 const Fundmes = () => {
-  const [isConnected, setIsConnected] = useState(false)
-
-  const startFundme = () => {}
-  const donate = () => {}
   const [fundmes, setFundmes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [aeSdk, setAeSdk] = useState(null);
+  const [user, setUser] = useState();
+  const [balance, setBalance] = useState(0);
+  const [isConnected, setIsConnected] = useState(false);
+
+  async function getContract() {
+    const contractInstance = await aeSdk.getContractInstance({ source: haelp });
+    const ACI = await contractInstance._aci;
+    const contract = await aeSdk.getContractInstance({aci: ACI, contractAddress: contractAddress})
+    return contract;
+  }
+
+  const createCampaign = async (title, description, image, target) => {
+    console.log(aeSdk);
+    const contract = await getContract()
+    await contract.methods.create_campaign(title, description, image, target);
+    const account = Object.keys(aeSdk._accounts.current)[0];
+    let fundme = {title, description, image, target};
+    fundme.donated = 0;
+    fundme.owner = account;
+    setFundmes([fundme, ...fundmes]);
+  }
 
   const getFundmes = useCallback(async () => {
     try {
@@ -32,59 +47,92 @@ const Fundmes = () => {
     }
   });
 
-// const addFundme = async (data) => {
-//   try {
-//     setLoading(true);
-//     startFundme(data).then((resp) => {
-//       getFundmes();
-//     });
-//     toast(<NotificationSuccess text="Campaign created successfully." />);
-//   } catch (error) {
-//     console.log({ error });
-//     toast(<NotificationError text="Failed to create a campaign." />);
-//   } finally {
-//     setLoading(false);
-//   }
-// };
+  useEffect(() => {
+    getFundmes();
+    if(aeSdk && aeSdk._accounts) {
+      setIsConnected(true);
+    }
+  }, [aeSdk])
+
+  const connectWallet = async() => {
+    try {
+      const client = await login();
+      console.log(client)
+      setAeSdk(client);
+      const account = Object.keys(client._accounts.current)[0]
+      setUser(account);
+      const accountBalance = (await client.getBalance(account)) / 1e18;
+      setBalance(accountBalance);
+      setIsConnected(true);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  const disconnectWallet = async() => {
+    try {
+      await logout();
+      setIsConnected(false);
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
 const addFundme = async (data) => {
-  await createCampaign(data.title, data.description, data.image, data.target * 1e18)
-  window.location.reload()
+  try {
+    setLoading(true);
+    await createCampaign(data.title, data.description, data.image, data.target * 1e18);
+    toast(<NotificationSuccess text="Campaign created successfully." />);
+  } catch (err) {
+    toast(<NotificationError text="Failed to create a campaign." />);
+  } finally {
+    setLoading(false);
+  }
+}
+
+const donate = async(id, amount) => {
+  const contract = await getContract();
+  console.log(contract)
+  await contract.methods.donate(Number(id), { amount: Number(amount) })
 }
 
 
 const donateTo = async (id, amount) => {
   try {
-    await donate({
-      id,
-      amount,
-    }).then((resp) => getFundmes());
+    if(!aeSdk) {
+      toast(<NotificationError text="Wallet not connected!" />);
+      return;
+    }
+    await donate(id, amount)
+      .then((res) => getFundmes());
     toast(<NotificationSuccess text="Funds donated successfully!" />);
   } catch (error) {
+    console.log(error)
     toast(<NotificationError text="Failed to donate!" />);
   } finally {
     setLoading(false);
   }
 };
 
-const connectWallet = () => {
-  console.log("jkkldhk")
-    if(window.confirm("Are you sure you want to connect wallet?")) {
-      setIsConnected(true);
-    }
-}
-
-useEffect(() => {
-  getFundmes();
-}, []);
-
   return (
     <>
       {!loading ? (
         <>
+
           <div className="d-flex justify-content-between align-items-center mb-4">
             <h1 className="fs-8 fw-bold mb-0">HAELP</h1>
             {isConnected ?
-            <AddFundme save={addFundme} /> :
+              <Nav className="justify-content-end pt-3 pb-5" style={{gap: 16}}>
+                      <Nav.Item>
+                        <Wallet
+                          address={user}
+                          amount={balance.toFixed(2)}
+                          symbol="AE"
+                          destroy={disconnectWallet}
+                        />
+                      </Nav.Item>
+                      <AddFundme save={addFundme} /> 
+              </Nav> :
             <Button
             onClick={connectWallet}
             variant="outline-light"
@@ -101,6 +149,7 @@ useEffect(() => {
                   ..._fundme,
                 } }
                 donate={donateTo}
+                id={index}
               />
             ))}
           </Row>

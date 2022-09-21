@@ -39,13 +39,13 @@ contract Haelp =
 
     payable public stateful entrypoint donate(campaign_id: int) = 
         let c : campaign = List.get(campaign_id, state.campaigns)
-        c{donated @ d = d + Call.value}
-        put(state{campaigns = List.replace_at(campaign_id, c, state.campaigns)})
+        let new : campaign = c{donated @ d = d + Call.value}
+        put(state{campaigns = List.replace_at(campaign_id, new, state.campaigns)})
 
 
     public stateful entrypoint withdraw(campaign_id: int) = 
         let c : campaign = List.get(campaign_id, state.campaigns) 
         require(Call.caller == c.owner, "Only owner of campign can withdraw")
-        c{withdrawn @ w = c.donated}
-        put(state{campaigns = List.replace_at(campaign_id, c, state.campaigns)})
+        let new : campaign = c{withdrawn @ w = c.donated - w}
+        put(state{campaigns = List.replace_at(campaign_id, new, state.campaigns)})
         Chain.spend(Call.caller, c.donated)

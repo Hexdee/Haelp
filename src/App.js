@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Container, Nav } from "react-bootstrap";
-import { login, logout as destroy, accountBalance, getAccountId } from "./utils/aeternity";
 import Wallet from "./components/Wallet";
 import { Notification } from "./components/utils/Notifications";
 import Fundmes from "./components/fundraiser/Fundmes";
@@ -12,19 +11,9 @@ const App = function AppWrapper() {
   const [account, setAccount] = useState();
   const [balance, setBalance] = useState("0");
 
-  const getBalance = useCallback(async () => {
-    setAccount(await getAccountId())
-    if (account) {
-      setBalance(await accountBalance());
-    }
-    // console.log(await getAccountId())
-  });
+  const destroy = () => {}
 
   useEffect(() => {
-    console.log("hello");
-    // login().then(res => console.log(res));
-    // console.log("hello");
-    // getBalance().then(() => console.log(balance));
   }, [account]);
 
 return (
@@ -33,16 +22,6 @@ return (
       <Notification />
       {/* {account ? ( */}
         <Container fluid="md">
-          <Nav className="justify-content-end pt-3 pb-5">
-            <Nav.Item>
-              <Wallet
-                address={account}
-                amount={balance}
-                symbol="AE"
-                destroy={destroy}
-              />
-            </Nav.Item>
-          </Nav>
           <main><Fundmes /></main>
         </Container>
       {/* ) : (
