@@ -13,7 +13,7 @@ const Fundmes = () => {
   const [fundmes, setFundmes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingConnection, setLoadingConnection] = useState(false);
-  // const [loadingDonation, setLoadingDonation] = useState(false);
+  const [loadingDonation, setLoadingDonation] = useState(false);
   const [aeSdk, setAeSdk] = useState(null);
   const [user, setUser] = useState();
   const [balance, setBalance] = useState(0);
