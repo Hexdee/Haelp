@@ -1,8 +1,12 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Form } from "react-bootstrap";
+import Loader from "../utils/Loader";
+import { toast } from "react-toastify";
+import { NotificationError } from "../utils/Notifications";
 
 const Fundme = ({ fundme, donate, id }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [amount, setAmount] = useState("");
     let { target, title, description, image, owner, donated} =
       fundme;
@@ -10,8 +14,17 @@ const Fundme = ({ fundme, donate, id }) => {
     target = Number(target) / 1e18;
     donated = Number(donated) / 1e18;;
 
-  const triggerDonate = () => {
-    donate(id, Number(amount) * 1e18);
+  const triggerDonate = async () => {
+    setIsLoading(true);
+    try {
+      await donate(id, Number(amount) * 1e18, isLoading);
+      setAmount("");
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error); 
+      toast(<NotificationError text="Failed to donate!" />);
+      setIsLoading(false);
+    }
   };
 
 
@@ -41,17 +54,17 @@ const Fundme = ({ fundme, donate, id }) => {
           </Card.Text>
               <Form.Control
                 type="text"
-                onChange={(e) => {
-                  setAmount(e.target.value);
-                }}
+                onChange={(e) => { setAmount(e.target.value); }}
                 placeholder="Enter amount to donate"
+                value={amount}
               />
           <Button
             variant="outline-dark"
             onClick={triggerDonate}
             className="w-100 py-3 mt-3"
+            disabled={amount === ""}
           >
-            Donate
+            {isLoading ? <Loader /> : "Donate"}
           </Button>
         </Card.Body>
       </Card>

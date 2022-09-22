@@ -13,6 +13,8 @@ const contractAddress = "ct_tUHAMNd59QzVoTas7goG5HvfvhYBydbWV2aNbw7HmoJaDuBAS";
 const Fundmes = () => {
   const [fundmes, setFundmes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingConnection, setLoadingConnection] = useState(false);
+  // const [loadingDonation, setLoadingDonation] = useState(false);
   const [aeSdk, setAeSdk] = useState(null);
   const [user, setUser] = useState();
   const [balance, setBalance] = useState(0);
@@ -55,6 +57,7 @@ const Fundmes = () => {
   }, [aeSdk])
 
   const connectWallet = async() => {
+    setLoadingConnection(true);
     try {
       const client = await login();
       setAeSdk(client);
@@ -63,8 +66,10 @@ const Fundmes = () => {
       const accountBalance = (await client.getBalance(account)) / 1e18;
       setBalance(accountBalance);
       setIsConnected(true);
+      setLoadingConnection(false);
     } catch (err) {
-      console.log(err)
+      console.log(err);
+      setLoadingConnection(false);
     }
   }
 
@@ -136,7 +141,7 @@ const donateTo = async (id, amount) => {
             variant="outline-light"
             className="rounded-pill px-3 mt-3"
           >
-            Connect Wallet
+            {loadingConnection ? <Loader /> : "Connect Wallet"}
           </Button>}
           </div>
           <Row xs={1} sm={2} lg={3} className="g-3  mb-5 g-xl-4 g-xxl-5">
@@ -148,6 +153,7 @@ const donateTo = async (id, amount) => {
                 } }
                 donate={donateTo}
                 id={index}
+                // isLoading={loadingDonation}
               />
             ))}
           </Row>
