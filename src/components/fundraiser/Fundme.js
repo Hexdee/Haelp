@@ -2,7 +2,7 @@ import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Form } from "react-bootstrap";
 
-const Fundme = ({ fundme, donate, id }) => {
+const Fundme = ({ fundme, donate, withdraw, id, user }) => {
     const [amount, setAmount] = useState("");
     let { target, title, description, image, owner, donated} =
       fundme;
@@ -14,8 +14,10 @@ const Fundme = ({ fundme, donate, id }) => {
     donate(id, Number(amount) * 1e18);
   };
 
+  const triggerWithdraw = () => {
+    withdraw(id);
+  }
 
-  console.log()
   return (
     <Col>
       <Card className=" h-100">
@@ -39,6 +41,7 @@ const Fundme = ({ fundme, donate, id }) => {
           <Card.Text className="text-secondary">
             <span>Raised: {donated} AE</span>
           </Card.Text>
+            {user != owner &&
               <Form.Control
                 type="text"
                 onChange={(e) => {
@@ -46,13 +49,22 @@ const Fundme = ({ fundme, donate, id }) => {
                 }}
                 placeholder="Enter amount to donate"
               />
+            }
+          {user == owner ?
+          <Button
+            variant="outline-dark"
+            onClick={triggerWithdraw}
+            className="w-100 py-3"
+          >
+            Withdraw
+          </Button> :
           <Button
             variant="outline-dark"
             onClick={triggerDonate}
             className="w-100 py-3"
           >
             Donate
-          </Button>
+          </Button>}
         </Card.Body>
       </Card>
     </Col>

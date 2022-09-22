@@ -23,7 +23,7 @@ const Wallet = ({ address, amount, symbol, destroy }) => {
 
           <Dropdown.Menu className="shadow-lg border-0">
             <Dropdown.Item
-              href={`https://explorer.testnet.near.org/accounts/${address}`}
+              href={`https://explorer.aeternity.io/account/${address}`}
               target="_blank"
             >
               <Stack direction="horizontal" gap={2}>

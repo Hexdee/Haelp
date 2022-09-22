@@ -92,8 +92,8 @@ const AddFundme = ({ save }) => {
           <Button
             variant="dark"
             disabled={!isFormFilled()}
-            onClick={() => {
-              save({
+            onClick={async () => {
+              await save({
                 title,
                 image,
                 description,
