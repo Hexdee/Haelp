@@ -22,6 +22,12 @@ npm -v
 git clone https://github.com/hexdee/haelp
 ```
 
+- Move into the directoty
+
+```bash
+cd haelp
+```
+
 - Install dependencies
 
 ```bash
@@ -36,7 +42,7 @@ cd src/contract && node deploy.js
 
 - Copy contract address and update `line 4` of  [aeternity.js](/src/utils/aeternity.js) with the new address
 
-```bash
+```javascript
 export const contractAddress = "The deployed contract address";
 ```
 
