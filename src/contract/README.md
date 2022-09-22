@@ -1,4 +1,4 @@
-## Haelp smart contract
+# Haelp smart contract
 Sophia smart contract for Haelp crowdfunding aepp
 
 ## Files
