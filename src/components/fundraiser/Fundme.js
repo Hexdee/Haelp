@@ -1,8 +1,13 @@
 import React, {useState} from "react";
 import PropTypes from "prop-types";
 import { Card, Button, Col, Badge, Stack, Form } from "react-bootstrap";
+import Loader from "../utils/Loader";
+import { toast } from "react-toastify";
+import { NotificationError } from "../utils/Notifications";
+
 
 const Fundme = ({ fundme, donate, withdraw, id, user }) => {
+    const [isLoading, setIsLoading] = useState(false);
     const [amount, setAmount] = useState("");
     let { target, title, description, image, owner, donated} =
       fundme;
@@ -10,8 +15,17 @@ const Fundme = ({ fundme, donate, withdraw, id, user }) => {
     target = Number(target) / 1e18;
     donated = Number(donated) / 1e18;;
 
-  const triggerDonate = () => {
-    donate(id, Number(amount) * 1e18);
+  const triggerDonate = async () => {
+    setIsLoading(true);
+    try {
+      await donate(id, Number(amount) * 1e18, isLoading);
+      setAmount("");
+      setIsLoading(false);
+    } catch (error) {
+      console.log(error); 
+      toast(<NotificationError text="Failed to donate!" />);
+      setIsLoading(false);
+    }
   };
 
   const triggerWithdraw = () => {
@@ -32,9 +46,9 @@ const Fundme = ({ fundme, donate, withdraw, id, user }) => {
         <div className=" ratio ratio-4x3">
           <img src={image} alt={title} style={{ objectFit: "cover" }} />
         </div>
-        <Card.Body className="d-flex  flex-column text-center">
-          <Card.Title>{title}</Card.Title>
-          <Card.Text className="flex-grow-1 ">{description}</Card.Text>
+        <Card.Body className="d-flex  flex-column" style={{ textAlign: "left" }}>
+          <Card.Title style={{ color: "#FF6247", fontWeight: "700" }}>{title}</Card.Title>
+          <Card.Text className="flex-grow-1" style={{ fontSize: "14px" }}>{description}</Card.Text>
           <Card.Text className="text-secondary">
             <span>Target: {target} AE</span>
           </Card.Text>
@@ -44,10 +58,9 @@ const Fundme = ({ fundme, donate, withdraw, id, user }) => {
             {user != owner &&
               <Form.Control
                 type="text"
-                onChange={(e) => {
-                  setAmount(e.target.value);
-                }}
+                onChange={(e) => { setAmount(e.target.value); }}
                 placeholder="Enter amount to donate"
+                value={amount}
               />
             }
           {user == owner ?
@@ -61,9 +74,10 @@ const Fundme = ({ fundme, donate, withdraw, id, user }) => {
           <Button
             variant="outline-dark"
             onClick={triggerDonate}
-            className="w-100 py-3"
+            className="w-100 py-3 mt-3"
+            disabled={amount === ""}
           >
-            Donate
+            {isLoading ? <Loader /> : "Donate"}
           </Button>}
         </Card.Body>
       </Card>
